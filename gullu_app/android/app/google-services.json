@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "780465847104",
+    "project_id": "fluttermobx",
+    "storage_bucket": "fluttermobx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780465847104:android:bcacdc8c5c90e3cc4ed8a5",
+        "android_client_info": {
+          "package_name": "com.example.gullu_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780465847104-0e65oloi8p9mki61hml2md0edcudhi5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDzUnEEhmZpu8LLYUVYOPMqdrJYNGTCEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780465847104-0e65oloi8p9mki61hml2md0edcudhi5b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
