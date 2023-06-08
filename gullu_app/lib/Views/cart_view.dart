@@ -6,9 +6,9 @@ import 'package:gullu_app/Services/firebase_services.dart';
 import 'package:gullu_app/Services/models/product_model.dart';
 import 'package:gullu_app/bloc/cart_cubit.dart';
 import 'package:gullu_app/bloc/cart_states.dart';
+import 'package:gullu_app/bloc/history_cubit.dart';
 
 import '../Services/models/cart_product_model.dart';
-
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -18,18 +18,19 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  List<CartProductModel> data=[];
-  int total=0;
+  List<CartProductModel> data = [];
+  int total = 0;
 
   @override
   void initState() {
     context.read<CartCubit>().getAddedProducts();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
+        appBar: PreferredSize(
           preferredSize: Size(MediaQuery.of(context).size.width, 100),
           child: Container(
               alignment: Alignment.center,
@@ -44,148 +45,185 @@ class _CartViewState extends State<CartView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     InkWell(
-                      onTap: (){
+                    InkWell(
+                      onTap: () {
                         FirebaseServices().clearCart();
-                          Navigator.pop(context);
+                        Navigator.pop(context);
                       },
-                       child:const Icon(
+                      child: const Icon(
                         FontAwesomeIcons.arrowLeft,
                         color: Colors.white,
-                                         ),
-                     ),
-                     const Text(
+                      ),
+                    ),
+                    const Text(
                       "Güllü App",
                       style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w400),
                     ),
-                   const Icon(FontAwesomeIcons.trash,color: Colors.transparent,)
+                    const Icon(
+                      FontAwesomeIcons.trash,
+                      color: Colors.transparent,
+                    )
                   ],
                 ),
               )),
         ),
         body: BlocBuilder<CartCubit, CartStates>(
           builder: (context, state) {
-            if(state is CartLoadingState){
-              return  Center(
-                child: CircularProgressIndicator(color: Colors.red.shade400,),
+            if (state is CartLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Colors.red.shade400,
+                ),
               );
-            }
-            else if(state is CartCompletedState){
-              data=state.model;
-              for(int i =0;i<data.length;i++){
-                total=total+(data[i].price! * data[i].amount!);
+            } else if (state is CartCompletedState) {
+              data = state.model;
+              for (int i = 0; i < data.length; i++) {
+                total = total + (data[i].price! * data[i].amount!);
               }
               return Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 90),
-                    child: ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return  Container(
-                            margin: const EdgeInsets.all(10),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.black.withOpacity(0.1)),
-                              color: Colors.white,
-                              boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black.withOpacity(0.4))],
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: CachedNetworkImage(
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.fitHeight,
-                                        imageUrl: data[index].img.toString(),
-                                        progressIndicatorBuilder: (context, url, progress) {
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.red.shade400,
-                                            ),
-                                          );
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          return const Center(
-                                            child: Text("Bir hata oluştu"),
-                                          );
-                                        },
-                                      ),
+                  ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                          margin: const EdgeInsets.all(10),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.black.withOpacity(0.1)),
+                            color: Colors.white,
+                            boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black.withOpacity(0.4))],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.fitHeight,
+                                      imageUrl: data[index].img.toString(),
+                                      progressIndicatorBuilder: (context, url, progress) {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.red.shade400,
+                                          ),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return const Center(
+                                          child: Text("Bir hata oluştu"),
+                                        );
+                                      },
                                     ),
-                                    const SizedBox(width: 15),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          data[index].name.toString(),
-                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(data[index].price.toString(),
-                                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                                            const Icon(
-                                              FontAwesomeIcons.turkishLiraSign,
-                                              size: 10,
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                 
-                                  ],
-                                ),
-                                  Row(
-                                    children: [
-                                      Text("Adet :${data[index].amount}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                                      const SizedBox(width: 10,),
-                                      Text("Toplam :${(data[index].amount!) * (data[index].price!)}",style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                                   ),
-                                  const SizedBox(width: 5,)
-                                  ],
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        data[index].name.toString(),
+                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(data[index].price.toString(),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                                          const Icon(
+                                            FontAwesomeIcons.turkishLiraSign,
+                                            size: 10,
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text("Adet :${data[index].amount}",
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Toplam :${(data[index].amount!) * (data[index].price!)}",
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
                                   )
-                              ],
-                            ));
-                      },
-                    ),
+                                ],
+                              )
+                            ],
+                          ));
+                    },
                   ),
-                  Container(
-                    
-                    margin:const EdgeInsets.all(10),
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.red.shade400,
-              
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Toplam:$total",style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400,color: Colors.white)),
-                        const Icon(FontAwesomeIcons.turkishLiraSign,color: Colors.white,size: 20,),
-                        const Text("Onayla", style:  TextStyle(fontSize: 20, fontWeight: FontWeight.w400,color: Colors.white))
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade400,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Uyarı"),
+                                content: const Text("Sepetinizi Onaylıyor Musunuz ?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        FirebaseServices().addToHistory(data, total);
+                                        Navigator.pop(context);
+                                        FirebaseServices().clearCart();
+                                        Navigator.pop(context);
+                                        BlocProvider.of<HistoryCubit>(context).getHistory();
+                                      },
+                                      child: const Text("Evet")),
+                                  TextButton(onPressed: () {
+                                    Navigator.pop(context);
+                                  }, child: const Text("Hayır"))
+                                ],
+                              );
+                            });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            children: [
+                              Text("Toplam:$total",
+                                  style:
+                                      const TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white)),
+                              const Icon(
+                                FontAwesomeIcons.turkishLiraSign,
+                                color: Colors.white,
+                                size: 15,
+                              ),
+                            ],
+                          ),
+                          const Text("Onayla",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white)),
+                        ],
+                      ),
                     ),
                   )
                 ],
-              );           
-            }
-            else{
+              );
+            } else {
               state as CartErrorState;
               return Center(
                 child: Text(state.errorMessage),
               );
             }
           },
-        )
-    );
+        ));
   }
 }

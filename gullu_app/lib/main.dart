@@ -5,6 +5,7 @@ import 'package:gullu_app/Services/firebase_services.dart';
 import 'package:gullu_app/app.dart';
 import 'firebase_options.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

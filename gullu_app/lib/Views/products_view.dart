@@ -26,6 +26,7 @@ class _ProductsState extends State<Products> {
     BlocProvider.of<ProductCubit>(context).getProductList();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
